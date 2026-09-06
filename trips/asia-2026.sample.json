@@ -1,15 +1,24 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "asia-2026",
-  "name": "Asia 2026",
-  "travelers": ["Michael"],
+  "name": "Asia 2026 Sample",
+  "travelers": [
+    "Traveler"
+  ],
   "startDate": "2026-09-14",
   "endDate": "2026-09-24",
   "homeTimeZone": "America/New_York",
   "preferences": {
     "pace": "business-first, low-friction",
-    "interests": ["local food", "history", "walking", "interesting neighborhoods"],
-    "avoid": ["over-scheduled evenings"]
+    "interests": [
+      "local food",
+      "history",
+      "walking",
+      "interesting neighborhoods"
+    ],
+    "avoid": [
+      "over-scheduled evenings"
+    ]
   },
   "regions": [
     {
@@ -17,17 +26,45 @@
       "name": "China",
       "country": "China",
       "services": [
-        {"id":"amap","name":"AMap Global","role":"maps","note":"Preferred local mapping and China travel utility.","appStoreUrl":"https://apps.apple.com/us/app/amap-global/id461703208","webUrl":"https://www.amap.com/"},
-        {"id":"didi","name":"DiDi China","role":"mobility","note":"Ride hailing with English interface and international traveler support.","appStoreUrl":"https://apps.apple.com/us/app/didi-china-ride-hailing/id554499054","webUrl":"https://www.didiglobal.com/"}
+        {
+          "id": "amap",
+          "name": "AMap Global",
+          "role": "maps",
+          "note": "Preferred local mapping and China travel utility.",
+          "appStoreUrl": "https://apps.apple.com/us/app/amap-global/id461703208",
+          "webUrl": "https://www.amap.com/"
+        },
+        {
+          "id": "didi",
+          "name": "DiDi China",
+          "role": "mobility",
+          "note": "Ride hailing with English interface and international traveler support.",
+          "appStoreUrl": "https://apps.apple.com/us/app/didi-china-ride-hailing/id554499054",
+          "webUrl": "https://www.didiglobal.com/"
+        }
       ],
       "readiness": [
-        {"id":"amap-installed","label":"AMap Global installed","required":true},
-        {"id":"didi-installed","label":"DiDi China installed and signed in","required":true},
-        {"id":"payment-ready","label":"China payment method verified","required":true,"note":"Confirm your intended card/wallet works before departure."},
-        {"id":"offline-addresses","label":"Hotel and supplier addresses stored in Chinese","required":true}
+        {
+          "id": "amap-installed",
+          "label": "AMap Global installed",
+          "required": true
+        },
+        {
+          "id": "didi-installed",
+          "label": "DiDi China installed and signed in",
+          "required": true
+        },
+        {
+          "id": "offline-addresses",
+          "label": "Hotel and supplier addresses stored in Chinese",
+          "required": true
+        }
       ],
       "guidance": [
-        {"title":"Offline rule","text":"Keep hotel, supplier and airport destination cards available even if live maps or cellular data fail."}
+        {
+          "title": "Offline rule",
+          "text": "Keep hotel, supplier and airport destination cards available even if live maps or cellular data fail."
+        }
       ]
     },
     {
@@ -35,48 +72,214 @@
       "name": "South Korea",
       "country": "South Korea",
       "services": [
-        {"id":"naver","name":"NAVER Map","role":"maps","note":"Local maps, transit and navigation.","appStoreUrl":"https://apps.apple.com/us/app/naver-maps-navigation/id311867728","webUrl":"https://map.naver.com/"},
-        {"id":"kride","name":"k.ride","role":"mobility","note":"Kakao Mobility ride-hailing app aimed at international travelers.","appStoreUrl":"https://apps.apple.com/us/app/k-ride-taxi-cab-travel/id6474654222","webUrl":"https://www.kride.kakaomobility.com/"}
+        {
+          "id": "naver",
+          "name": "NAVER Map",
+          "role": "maps",
+          "note": "Local maps, transit and navigation.",
+          "appStoreUrl": "https://apps.apple.com/us/app/naver-maps-navigation/id311867728",
+          "webUrl": "https://map.naver.com/"
+        },
+        {
+          "id": "kride",
+          "name": "k.ride",
+          "role": "mobility",
+          "note": "Ride-hailing app aimed at international travelers.",
+          "appStoreUrl": "https://apps.apple.com/us/app/k-ride-taxi-cab-travel/id6474654222",
+          "webUrl": "https://www.kride.kakaomobility.com/"
+        }
       ],
       "readiness": [
-        {"id":"naver-installed","label":"NAVER Map installed","required":true},
-        {"id":"kride-installed","label":"k.ride installed and payment configured","required":false},
-        {"id":"korean-addresses","label":"Hotel and supplier addresses stored in Korean","required":true}
+        {
+          "id": "naver-installed",
+          "label": "NAVER Map installed",
+          "required": true
+        },
+        {
+          "id": "korean-addresses",
+          "label": "Hotel and supplier addresses stored in Korean",
+          "required": true
+        }
       ],
       "guidance": [
-        {"title":"Navigation","text":"Prefer the regional mapping provider for local navigation while keeping VEYOS as the trip context and destination launcher."}
+        {
+          "title": "Navigation",
+          "text": "Prefer the regional mapping provider while VEYOS keeps the trip context and handoffs."
+        }
       ]
     }
   ],
   "legs": [
-    {"id":"shanghai","regionId":"china","name":"Shanghai","city":"Shanghai","country":"China","startDate":"2026-09-14","endDate":"2026-09-18","purpose":"Conference + supplier work","stay":{"name":"Shanghai hotel","address":"Add hotel address","localAddress":"添加中文地址"}},
-    {"id":"korea","regionId":"korea","name":"Korea","city":"Seoul","country":"South Korea","startDate":"2026-09-19","endDate":"2026-09-24","purpose":"Supplier visit + travel","stay":{"name":"Seoul hotel","address":"Add hotel address","localAddress":"한국어 주소 추가"}}
+    {
+      "id": "shanghai",
+      "regionId": "china",
+      "name": "Shanghai",
+      "city": "Shanghai",
+      "country": "China",
+      "startDate": "2026-09-14",
+      "endDate": "2026-09-18",
+      "purpose": "Conference + supplier work",
+      "stay": {
+        "name": "Shanghai hotel",
+        "address": "Hotel address",
+        "localAddress": "酒店中文地址"
+      }
+    },
+    {
+      "id": "korea",
+      "regionId": "korea",
+      "name": "Korea",
+      "city": "Seoul",
+      "country": "South Korea",
+      "startDate": "2026-09-19",
+      "endDate": "2026-09-24",
+      "purpose": "Supplier visit + travel",
+      "stay": {
+        "name": "Korea hotel",
+        "address": "Hotel address",
+        "localAddress": "호텔 한국어 주소"
+      }
+    }
   ],
   "itinerary": [
-    {"legId":"shanghai","date":"2026-09-15","time":"09:00","title":"Conference / business program","location":"Shanghai","type":"Work","note":"Replace with confirmed agenda."},
-    {"legId":"shanghai","date":"2026-09-16","time":"09:00","title":"Supplier visit","location":"Add supplier address","localAddress":"添加供应商中文地址","type":"Supplier","note":"Add contact, PPE and objectives."},
-    {"legId":"korea","date":"2026-09-21","time":"09:00","title":"Supplier visit","location":"Add supplier address","localAddress":"공급업체 한국어 주소 추가","type":"Supplier","note":"Add contact and visit agenda."}
+    {
+      "legId": "shanghai",
+      "date": "2026-09-15",
+      "time": "09:00",
+      "title": "Conference / business program",
+      "location": "Shanghai",
+      "type": "Work"
+    },
+    {
+      "legId": "korea",
+      "date": "2026-09-21",
+      "time": "09:00",
+      "title": "Supplier visit",
+      "location": "Supplier site",
+      "type": "Supplier"
+    }
   ],
   "transport": [
-    {"legId":"shanghai","from":"Shanghai hotel","to":"Supplier","mode":"Car","plannedMinutes":60,"note":"Precompute a normal range and departure buffer once the supplier address is confirmed.","localDestination":"添加供应商中文地址"},
-    {"legId":"korea","from":"Seoul hotel","to":"Supplier","mode":"Car / transit","plannedMinutes":60,"note":"Precompute preferred and backup routes before departure.","localDestination":"공급업체 한국어 주소 추가"}
+    {
+      "id": "airport-hotel",
+      "legId": "shanghai",
+      "date": "2026-09-14",
+      "from": "PVG",
+      "to": "Shanghai hotel",
+      "mode": "Car",
+      "status": "provider_confirmed",
+      "responsibleParty": {
+        "type": "driver",
+        "name": "Prearranged driver",
+        "contact": "Stored privately"
+      },
+      "localDestination": "酒店中文地址",
+      "note": "Provider-owned transfer; private package would contain driver/vehicle details."
+    },
+    {
+      "id": "hotel-airport",
+      "legId": "shanghai",
+      "date": "2026-09-18",
+      "from": "Shanghai hotel",
+      "to": "PVG",
+      "mode": "Car",
+      "status": "action_required",
+      "responsibleParty": {
+        "type": "traveler",
+        "name": "Traveler"
+      },
+      "localDestination": "上海浦东国际机场",
+      "note": "Pickup still needs to be arranged."
+    },
+    {
+      "id": "pvg-icn",
+      "legId": "korea",
+      "date": "2026-09-18",
+      "from": "PVG",
+      "to": "ICN",
+      "mode": "Flight",
+      "status": "confirmed",
+      "responsibleParty": {
+        "type": "carrier",
+        "organization": "Example Airline"
+      },
+      "booking": {
+        "carrier": "Example Airline",
+        "serviceNumber": "EX 882",
+        "confirmation": "ABC123",
+        "seat": "12A",
+        "departureTime": "14:20",
+        "arrivalTime": "17:15",
+        "statusUrl": "https://www.flightaware.com/",
+        "bookingUrl": "https://example.com/"
+      },
+      "localDestination": "인천국제공항",
+      "note": "Sample values only; real booking data stays in the private trip package."
+    },
+    {
+      "id": "cheonan-goyang",
+      "legId": "korea",
+      "date": "2026-09-21",
+      "from": "Cheonan",
+      "to": "Goyang",
+      "mode": "KTX + local transfer",
+      "status": "unbooked",
+      "responsibleParty": {
+        "type": "traveler",
+        "name": "Traveler"
+      },
+      "booking": {
+        "carrier": "KORAIL",
+        "serviceNumber": "KTX",
+        "departureTime": "TBD"
+      },
+      "note": "Route exists but no train has been selected or ticketed."
+    }
   ],
   "places": [
-    {"legId":"shanghai","name":"Hotel neighborhood walk","category":"Wander","zone":"Hotel zone","blurb":"Populate automatically once the hotel is confirmed."},
-    {"legId":"shanghai","name":"Dinner near hotel","category":"Food","zone":"Hotel zone","blurb":"Curated for the actual hotel and available evening."},
-    {"legId":"korea","name":"Evening near hotel","category":"Wander","zone":"Hotel zone","blurb":"Populate from itinerary, hotel and preferences."},
-    {"legId":"korea","name":"Local dinner","category":"Food","zone":"Hotel zone","blurb":"Add once the Korea leg is confirmed."}
+    {
+      "legId": "shanghai",
+      "name": "Hotel neighborhood walk",
+      "category": "Wander",
+      "zone": "Hotel zone",
+      "blurb": "Populate from the actual hotel and free-time windows."
+    },
+    {
+      "legId": "korea",
+      "name": "Local dinner",
+      "category": "Food",
+      "zone": "Hotel zone",
+      "blurb": "Curated around the active leg."
+    }
   ],
   "pocket": {
     "quick": [
-      {"label":"Passport","value":"Expires May 2028"},
-      {"label":"China visa","value":"Add verified visa details here"},
-      {"label":"Emergency","value":"Add corporate/local emergency contact"}
+      {
+        "label": "Emergency",
+        "value": "Add corporate/local emergency contact"
+      }
     ],
     "documents": [
-      {"title":"Passport copy","type":"Identity","status":"placeholder"},
-      {"title":"China visa copy","type":"Visa","status":"placeholder"},
-      {"title":"Flight confirmations","type":"Travel","status":"placeholder"}
+      {
+        "title": "Flight confirmations",
+        "type": "Travel",
+        "status": "private package"
+      },
+      {
+        "title": "Rail tickets",
+        "type": "Travel",
+        "status": "private package"
+      }
     ]
-  }
+  },
+  "unresolved": [
+    {
+      "date": "2026-09-18",
+      "item": "Confirm Shanghai hotel → PVG pickup"
+    },
+    {
+      "date": "2026-09-21",
+      "item": "Select and book Cheonan → Goyang train"
+    }
+  ]
 }
