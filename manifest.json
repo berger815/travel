@@ -1,23 +1,11 @@
 {
-  "name": "Veyos - Antigua for Michael + Amanda",
-  "short_name": "Veyos",
-  "description": "Offline-first Antigua travel companion centered on Pensativo House, discovery, routes, and journal.",
+  "name": "VEYOS Travel Shell",
+  "short_name": "VEYOS",
+  "description": "Reusable itinerary-driven personal travel companion.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#231f1c",
-  "theme_color": "#231f1c",
-  "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "background_color": "#111318",
+  "theme_color": "#111318"
 }
