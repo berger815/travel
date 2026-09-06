@@ -13,11 +13,22 @@ function setTrip(trip){
 function normalizeTrip(t){
   return {
     ...t,
-    schemaVersion:2,
+    schemaVersion:3,
     id:t.id||crypto.randomUUID(), name:t.name||'Untitled Trip', travelers:t.travelers||[],
     startDate:t.startDate||'', endDate:t.endDate||'', homeTimeZone:t.homeTimeZone||'America/New_York',
     regions:t.regions||[], legs:t.legs||[], itinerary:t.itinerary||[], places:t.places||[],
-    transport:t.transport||[], pocket:t.pocket||{}, preferences:t.preferences||{}
+    transport:(t.transport||[]).map(normalizeTransport), pocket:t.pocket||{}, preferences:t.preferences||{},
+    unresolved:t.unresolved||[]
+  };
+}
+function normalizeTransport(t){
+  return {
+    ...t,
+    id:t.id||crypto.randomUUID(),
+    status:t.status||'unknown',
+    responsibleParty:t.responsibleParty||{},
+    booking:t.booking||{},
+    links:t.links||[]
   };
 }
 function activeLeg(){
@@ -34,6 +45,14 @@ function todaysItems(){
   if(exact.length) return exact;
   const leg=activeLeg(); return leg ? state.trip.itinerary.filter(x=>x.legId===leg.id).slice(0,6) : [];
 }
+function activeTransport(){
+  if(!state.trip) return [];
+  const leg=activeLeg();
+  const d=todayISO();
+  const exact=state.trip.transport.filter(t=>t.date===d);
+  if(exact.length) return exact.slice(0,4);
+  return leg ? state.trip.transport.filter(t=>t.legId===leg.id).slice(0,4) : state.trip.transport.slice(0,4);
+}
 function appleMapUrl(p){
   const q = p.lat&&p.lon ? `${p.lat},${p.lon}` : [p.name,p.address].filter(Boolean).join(' ');
   return `https://maps.apple.com/?q=${encodeURIComponent(q)}`;
@@ -46,9 +65,75 @@ function readinessState(region){
 function setReady(region,id,value){
   const r=readinessState(region); r[id]=value; localStorage.setItem(regionKey(region),JSON.stringify(r)); renderAll();
 }
-function resolveService(id){ return activeRegion()?.services?.find(s=>s.id===id) || null; }
 function serviceLink(service){ return service?.webUrl || service?.appStoreUrl || '#'; }
 function actionButton(label,href,cls='mini'){ return href&&href!=='#' ? `<a class="${cls}" href="${esc(href)}" target="_blank" rel="noopener">${esc(label)}</a>` : ''; }
+
+const TRANSPORT_STATES = {
+  confirmed:{label:'Confirmed',symbol:'✓',className:'confirmed'},
+  provider_confirmed:{label:'Provider owns it',symbol:'◐',className:'provider'},
+  action_required:{label:'Action required',symbol:'⚠',className:'action'},
+  unbooked:{label:'Not booked',symbol:'?',className:'missing'},
+  unknown:{label:'Needs detail',symbol:'?',className:'missing'}
+};
+function transportState(t){ return TRANSPORT_STATES[t.status] || TRANSPORT_STATES.unknown; }
+function partyLabel(t){
+  const p=t.responsibleParty||{};
+  return p.organization || p.name || (p.type==='traveler'?'Traveler':p.type==='supplier'?'Supplier':'Unassigned');
+}
+function bookingPrimary(t){
+  const b=t.booking||{};
+  return [b.carrier,b.serviceNumber].filter(Boolean).join(' ') || t.mode || 'Transport';
+}
+function bookingDetails(t){
+  const b=t.booking||{};
+  const bits=[];
+  if(b.confirmation) bits.push(`Confirmation ${b.confirmation}`);
+  if(b.ticketNumber) bits.push(`Ticket ${b.ticketNumber}`);
+  if(b.seat) bits.push(`Seat ${b.seat}`);
+  if(b.car) bits.push(`Car ${b.car}`);
+  if(b.terminal) bits.push(`Terminal ${b.terminal}`);
+  if(b.gate) bits.push(`Gate ${b.gate}`);
+  return bits;
+}
+function transportLinks(t){
+  const b=t.booking||{};
+  const links=[];
+  if(b.statusUrl) links.push(actionButton('Live status',b.statusUrl,'mini primary'));
+  if(b.bookingUrl) links.push(actionButton('View booking',b.bookingUrl));
+  if(b.ticketUrl) links.push(actionButton('View ticket',b.ticketUrl));
+  (t.links||[]).forEach(l=>links.push(actionButton(l.label,l.url)));
+  return links.join('');
+}
+function renderTransportCard(t){
+  const s=transportState(t), details=bookingDetails(t), owner=partyLabel(t), b=t.booking||{};
+  const schedule=[b.departureTime,b.arrivalTime].filter(Boolean).join(' → ');
+  const links=transportLinks(t);
+  return `<div class="card transport-card ${esc(s.className)}">
+    <div class="transport-head">
+      <div>
+        <div class="kicker">${esc(bookingPrimary(t))}${t.date?` · ${esc(datePretty(t.date))}`:''}${schedule?` · ${esc(schedule)}`:''}</div>
+        <h3>${esc(t.from||'Origin')} → ${esc(t.to||'Destination')}</h3>
+      </div>
+      <span class="transport-status ${esc(s.className)}">${esc(s.symbol)} ${esc(s.label)}</span>
+    </div>
+    <div class="transport-owner"><span>Who gets me there</span><b>${esc(owner)}</b>${t.responsibleParty?.contact?`<small>${esc(t.responsibleParty.contact)}</small>`:''}</div>
+    ${details.length?`<div class="booking-grid">${details.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
+    ${t.localDestination?`<p class="local-address">${esc(t.localDestination)}</p>`:''}
+    ${t.note?`<p>${esc(t.note)}</p>`:''}
+    ${links?`<div class="inline-actions">${links}</div>`:''}
+  </div>`;
+}
+function transportReadinessSummary(){
+  const ts=state.trip?.transport||[];
+  const counts={confirmed:0,provider_confirmed:0,action_required:0,unbooked:0,unknown:0};
+  ts.forEach(t=>counts[t.status] = (counts[t.status]||0)+1);
+  const problem=counts.action_required+counts.unbooked+counts.unknown;
+  return `<div class="readiness-summary">
+    <span><b>${ts.length}</b><small>transport legs</small></span>
+    <span><b>${counts.confirmed+counts.provider_confirmed}</b><small>covered</small></span>
+    <span class="${problem?'warn-text':''}"><b>${problem}</b><small>need attention</small></span>
+  </div>`;
+}
 
 function renderRegionStrip(region){
   if(!region) return '';
@@ -64,9 +149,10 @@ function renderReadiness(region){
 }
 function renderToday(){
   const el=$('#today'); if(!state.trip){el.innerHTML=empty();return;}
-  const leg=activeLeg(), region=activeRegion(), items=todaysItems(), place=leg?.city||leg?.name||state.trip.name;
-  el.innerHTML=`<div class="hero"><div class="kicker">${esc(leg?.country||'Active journey')}</div><h1>${esc(place)}</h1><div class="muted">${esc(state.trip.travelers.join(' + '))}${leg?.stay?.name?` · ${esc(leg.stay.name)}`:''}</div><div class="actions"><button class="action" data-jump="explore">Nearby<small>use this leg's places</small></button><button class="action" data-jump="journey">Next<small>see the journey</small></button><button class="action" data-jump="pocket">Pocket<small>addresses + local tools</small></button><button class="action" id="openStay">Home base<small>${esc(leg?.stay?.name||'not set')}</small></button></div></div>
+  const leg=activeLeg(), region=activeRegion(), items=todaysItems(), transport=activeTransport(), place=leg?.city||leg?.name||state.trip.name;
+  el.innerHTML=`<div class="hero"><div class="kicker">${esc(leg?.country||'Active journey')}</div><h1>${esc(place)}</h1><div class="muted">${esc(state.trip.travelers.join(' + '))}${leg?.stay?.name?` · ${esc(leg.stay.name)}`:''}</div><div class="actions"><button class="action" data-jump="journey">Travel<small>handoffs + bookings</small></button><button class="action" data-jump="explore">Nearby<small>use this leg's places</small></button><button class="action" data-jump="pocket">Pocket<small>addresses + local tools</small></button><button class="action" id="openStay">Home base<small>${esc(leg?.stay?.name||'not set')}</small></button></div></div>
   ${renderRegionStrip(region)}
+  ${transport.length?`<div class="section-title">Getting from A → B</div>${transport.map(renderTransportCard).join('')}`:''}
   <div class="section-title">${items.length?'Today / current leg':'No itinerary items'}</div>${items.map(renderItem).join('')||'<div class="empty">Import itinerary items to populate Today.</div>'}
   ${renderReadiness(region)}`;
   bindCommon();
@@ -79,9 +165,12 @@ function renderItem(x){
 }
 function renderJourney(){
   const el=$('#journey'); if(!state.trip){el.innerHTML=empty();return;}
-  const transport=state.trip.transport||[];
-  el.innerHTML=`<div class="section-title">${esc(state.trip.name)} · ${datePretty(state.trip.startDate)}–${datePretty(state.trip.endDate)}</div><div class="timeline">${state.trip.legs.map(l=>`<div class="leg"><div class="kicker">${datePretty(l.startDate)}–${datePretty(l.endDate)}</div><h3>${esc(l.city||l.name)}${l.country?`, ${esc(l.country)}`:''}</h3>${l.purpose?`<p class="muted">${esc(l.purpose)}</p>`:''}${l.stay?.name?`<div class="chip">Stay · ${esc(l.stay.name)}</div>`:''}</div>`).join('')}</div>
-  ${transport.length?`<div class="section-title">Planned transport</div>${transport.map(t=>`<div class="card"><div class="kicker">${esc(t.mode||'Transport')}${t.plannedMinutes?` · ~${esc(t.plannedMinutes)} min`:''}</div><h3>${esc(t.from)} → ${esc(t.to)}</h3>${t.note?`<p>${esc(t.note)}</p>`:''}${t.localDestination?`<p class="local-address">${esc(t.localDestination)}</p>`:''}${(t.links||[]).length?`<div class="inline-actions">${t.links.map(l=>actionButton(l.label,l.url)).join('')}</div>`:''}</div>`).join('')}`:''}`;
+  const transport=state.trip.transport||[], unresolved=state.trip.unresolved||[];
+  el.innerHTML=`<div class="section-title">${esc(state.trip.name)} · ${datePretty(state.trip.startDate)}–${datePretty(state.trip.endDate)}</div>
+  ${transportReadinessSummary()}
+  <div class="timeline">${state.trip.legs.map(l=>`<div class="leg"><div class="kicker">${datePretty(l.startDate)}–${datePretty(l.endDate)}</div><h3>${esc(l.city||l.name)}${l.country?`, ${esc(l.country)}`:''}</h3>${l.purpose?`<p class="muted">${esc(l.purpose)}</p>`:''}${l.stay?.name?`<div class="chip">Stay · ${esc(l.stay.name)}</div>`:''}</div>`).join('')}</div>
+  ${transport.length?`<div class="section-title">Transport chain of custody</div>${transport.map(renderTransportCard).join('')}`:''}
+  ${unresolved.length?`<div class="section-title">Open travel items</div>${unresolved.map(x=>`<div class="card unresolved"><div class="kicker">${esc(x.date||'Open')}</div><h3>${esc(x.item||x.title||'Unresolved item')}</h3></div>`).join('')}`:''}`;
 }
 function renderExplore(){
   const el=$('#explore'); if(!state.trip){el.innerHTML=empty();return;}
