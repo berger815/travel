@@ -19,14 +19,16 @@
     </header>
 
     <main>
-      <section id="today" class="view active"></section>
+      <section id="prep" class="view active"></section>
+      <section id="today" class="view"></section>
       <section id="journey" class="view"></section>
       <section id="explore" class="view"></section>
       <section id="pocket" class="view"></section>
     </main>
 
-    <nav class="tabbar" aria-label="Primary">
-      <button data-view="today" class="tab active"><span>◉</span><small>Today</small></button>
+    <nav class="tabbar five" aria-label="Primary">
+      <button data-view="prep" class="tab active"><span>✓</span><small>Prep</small></button>
+      <button data-view="today" class="tab"><span>◉</span><small>Today</small></button>
       <button data-view="journey" class="tab"><span>⌁</span><small>Journey</small></button>
       <button data-view="explore" class="tab"><span>⌖</span><small>Explore</small></button>
       <button data-view="pocket" class="tab"><span>▣</span><small>Pocket</small></button>
@@ -36,12 +38,61 @@
   <dialog id="tripDialog">
     <form method="dialog" class="sheet">
       <div class="sheet-head"><b>Trip</b><button value="cancel" class="icon-btn">×</button></div>
-      <p>VEYOS is the reusable shell. A trip package supplies the itinerary, stays, places, documents and local context.</p>
+      <p>Import a baseline itinerary once. VEYOS keeps your prep edits locally on this device.</p>
       <label class="file-label">Import trip JSON<input id="tripFile" type="file" accept="application/json,.json" /></label>
       <button id="loadAsia" type="button" class="secondary">Load Asia 2026 sample</button>
       <button id="loadAntigua" type="button" class="secondary">Load Antigua sample</button>
-      <button id="exportTrip" type="button" class="secondary">Export active trip</button>
+      <button id="exportTrip" type="button" class="secondary">Export working trip</button>
+      <button id="resetEdits" type="button" class="secondary">Reset local edits</button>
       <button id="clearTrip" type="button" class="danger">Clear active trip</button>
+    </form>
+  </dialog>
+
+  <dialog id="transportDialog">
+    <form id="transportForm" class="sheet form-sheet">
+      <div class="sheet-head"><b>Edit transport</b><button type="button" class="icon-btn" data-close-dialog="transportDialog">×</button></div>
+      <input id="transportId" type="hidden" />
+      <div class="form-grid">
+        <label>Status<select id="transportStatus"><option value="confirmed">Confirmed</option><option value="provider_confirmed">Provider owns it</option><option value="action_required">Action required</option><option value="unbooked">Not booked</option><option value="unknown">Needs detail</option></select></label>
+        <label>Date<input id="transportDate" type="date" /></label>
+        <label>From<input id="transportFrom" /></label>
+        <label>To<input id="transportTo" /></label>
+        <label>Mode<input id="transportMode" /></label>
+        <label>Owner type<select id="ownerType"><option value="traveler">Me</option><option value="carrier">Carrier</option><option value="supplier">Supplier</option><option value="company">Company</option><option value="hotel">Hotel</option><option value="driver">Driver</option><option value="rail">Rail</option><option value="other">Other</option></select></label>
+        <label>Owner / driver<input id="ownerName" /></label>
+        <label>Organization<input id="ownerOrganization" /></label>
+        <label>Contact<input id="ownerContact" /></label>
+        <label>Service #<input id="serviceNumber" placeholder="DL 188 / KTX 123" /></label>
+        <label>Confirmation<input id="confirmation" /></label>
+        <label>Ticket #<input id="ticketNumber" /></label>
+        <label>Seat<input id="seat" /></label>
+        <label>Car<input id="car" /></label>
+        <label>Departure<input id="departureTime" type="time" /></label>
+        <label>Arrival<input id="arrivalTime" type="time" /></label>
+        <label>Terminal<input id="terminal" /></label>
+        <label>Gate<input id="gate" /></label>
+        <label class="wide">Local destination / driver card<input id="localDestination" /></label>
+        <label class="wide">Notes<textarea id="transportNote" rows="3"></textarea></label>
+      </div>
+      <button class="primary-btn" type="submit">Save changes</button>
+    </form>
+  </dialog>
+
+  <dialog id="eventDialog">
+    <form id="eventForm" class="sheet form-sheet">
+      <div class="sheet-head"><b id="eventDialogTitle">Add itinerary item</b><button type="button" class="icon-btn" data-close-dialog="eventDialog">×</button></div>
+      <input id="eventId" type="hidden" />
+      <div class="form-grid">
+        <label>Date<input id="eventDate" type="date" required /></label>
+        <label>Start<input id="eventTime" type="time" /></label>
+        <label>End<input id="eventEndTime" type="time" /></label>
+        <label>Type<select id="eventType"><option>Work</option><option>Supplier</option><option>Flight</option><option>Transport</option><option>Hotel</option><option>Dinner</option><option>Personal</option><option>Other</option></select></label>
+        <label class="wide">Title<input id="eventTitle" required /></label>
+        <label class="wide">Location<input id="eventLocation" /></label>
+        <label class="wide">Local-language address<input id="eventLocalAddress" /></label>
+        <label class="wide">Notes<textarea id="eventNote" rows="3"></textarea></label>
+      </div>
+      <button class="primary-btn" type="submit">Save itinerary item</button>
     </form>
   </dialog>
 

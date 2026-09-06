@@ -1,31 +1,25 @@
-# VEYOS Shell v0.3
+# VEYOS Shell v0.4
 
-Reusable itinerary-driven travel companion prototype.
-
-## What changed in v0.3
-
-Transport is now treated as an operational chain of custody rather than a generic itinerary note.
-
-- Every transport leg has an explicit status.
-- Every movement can identify **who gets me there**.
-- Flights, rail and transfers can carry confirmation/ticket/seat/terminal/gate fields.
-- Transport cards can link to authoritative live-status, booking and ticket pages.
-- The Journey view shows a transport-readiness summary and unresolved handoffs.
-- Today surfaces the active leg's A → B movements before optional travel content.
-- Missing information remains visible as `action_required`, `unbooked` or `unknown`.
-- Trip Package schema is now v3.
-- Service-worker cache stamp bumped so phones receive the new UI.
+Reusable itinerary-driven business travel companion prototype.
 
 ## Product principle
 
-**AI prepares the trip. VEYOS executes the trip. Local apps perform specialist actions.**
+**Travel prep first. Trip execution second. Leisure when time allows.**
 
-The shell should remain useful offline. Real-time gates, delays, traffic, weather and transit disruptions are enhancements sourced from authoritative providers, not AI dependencies.
+The imported trip package is the baseline. VEYOS derives gaps from that baseline and stores user changes separately on the device so a refreshed itinerary does not wipe out trip-prep work.
+
+## v0.4
+
+- New **Prep** tab with readiness score and derived travel gaps.
+- Transport gaps expose **Fix** and can be completed on the phone.
+- Business itinerary gaps expose **Fix** for missing location/start/end time.
+- Existing itinerary items can be edited locally.
+- New meetings, dinners, pickups and personal items can be added locally.
+- Local edits persist separately from the imported baseline trip.
+- **Reset local edits** restores the original imported trip.
+- **Export working trip** exports the merged baseline + local changes.
+- Free-time windows are derived from business end times and surfaced for leisure planning.
 
 ## Privacy
 
-The repository is public. Do not commit real trip packages containing booking references, exact business movements, driver information, private contacts, passport/visa data or other sensitive travel details. Import those packages locally on the device.
-
-## Repository history
-
-The original Antigua-specific prototype remains recoverable in Git history. The current repository root is the reusable VEYOS shell.
+The public repository contains only the shell and sanitized samples. Real trip packages and local overlays may contain booking references, supplier visits, driver information and hotel details and should remain private.
