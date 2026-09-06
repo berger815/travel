@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 2,
+  "id": "antigua-demo",
+  "name": "Antigua",
+  "travelers": ["Michael", "Amanda"],
+  "startDate": "2026-01-01",
+  "endDate": "2026-01-06",
+  "legs": [{"id":"antigua","city":"Antigua","country":"Guatemala","startDate":"2026-01-01","endDate":"2026-01-06","purpose":"Personal travel","stay":{"name":"Pensativo House Hotel","address":"Antigua Guatemala"}}],
+  "itinerary": [
+    {"legId":"antigua","date":"2026-01-01","time":"09:00","title":"Coffee + wander","location":"Historic core","type":"Explore"},
+    {"legId":"antigua","date":"2026-01-01","time":"18:00","title":"Rooftop sunset","location":"Antigua","type":"Personal"}
+  ],
+  "places": [
+    {"legId":"antigua","name":"Santa Catalina Arch","address":"5a Avenida Norte, Antigua Guatemala","category":"History","blurb":"Classic Antigua landmark."},
+    {"legId":"antigua","name":"La Merced Church","address":"Antigua Guatemala","category":"History","blurb":"Baroque church and plaza."},
+    {"legId":"antigua","name":"Pensativo House Hotel","address":"Antigua Guatemala","category":"Home","blurb":"Trip home base."}
+  ],
+  "pocket":{"quick":[{"label":"Home base","value":"Pensativo House Hotel"}],"documents":[]}
+}
